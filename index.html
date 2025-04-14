@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cryptography Demo Site</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    h1, h2 { text-align: center; }
+    .section { margin-bottom: 30px; }
+    textarea { width: 100%; height: 100px; }
+    .results { white-space: pre-wrap; background: #f4f4f4; padding: 10px; margin-top: 10px; border-radius: 5px; }
+    .algorithm { margin-top: 20px; }
+    button { padding: 10px 20px; margin-right: 10px; }
+  </style>
+</head>
+<body>
+  <h1>Cryptography Demonstration</h1>
+  <div class="section">
+    <h2>Input</h2>
+    <textarea id="userInput" placeholder="Type your text here..."></textarea>
+    <br />
+    <input type="file" id="fileInput" accept=".txt" />
+    <br /><br />
+    <button onclick="processText('encrypt')">Encrypt</button>
+    <button onclick="processText('decrypt')">Decrypt</button>
+  </div>
+
+  <div class="section">
+    <h2>Results</h2>
+    <div id="results"></div>
+  </div>
+
+  <script>
+    // SIMPLE ALGORITHM: Caesar Cipher
+    const caesarShift = (text, shift, mode) => {
+      if (mode === 'decrypt') shift = -shift;
+      return text.split('').map(char => {
+        const code = char.charCodeAt(0);
+        if (code >= 65 && code <= 90) {
+          return String.fromCharCode(((code - 65 + shift + 26) % 26) + 65);
+        } else if (code >= 97 && code <= 122) {
+          return String.fromCharCode(((code - 97 + shift + 26) % 26) + 97);
+        } else {
+          return char;
+        }
+      }).join('');
+    };
+
+    const processText = async (mode) => {
+      const inputField = document.getElementById('userInput');
+      const fileInput = document.getElementById('fileInput');
+      let text = inputField.value;
+
+      if (!text && fileInput.files.length > 0) {
+        const file = fileInput.files[0];
+        const reader = new FileReader();
+        reader.onload = () => {
+          text = reader.result;
+          showResults(text, mode);
+        };
+        reader.readAsText(file);
+      } else {
+        showResults(text, mode);
+      }
+    };
+
+    const showResults = (text, mode) => {
+      const resultsDiv = document.getElementById('results');
+      resultsDiv.innerHTML = '';
+
+      const algorithms = [
+        {
+          name: 'Caesar Cipher',
+          result: caesarShift(text, 3, mode)
+        }
+        // Add more algorithms here later
+      ];
+
+      algorithms.forEach(algo => {
+        const container = document.createElement('div');
+        container.className = 'algorithm';
+
+        const title = document.createElement('h3');
+        title.textContent = algo.name + ' (' + mode + ')';
+
+        const result = document.createElement('div');
+        result.className = 'results';
+        result.textContent = algo.result;
+
+        container.appendChild(title);
+        container.appendChild(result);
+        resultsDiv.appendChild(container);
+      });
+    };
+  </script>
+</body>
+</html>
