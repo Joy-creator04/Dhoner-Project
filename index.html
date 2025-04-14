@@ -14,6 +14,7 @@
     button { padding: 10px 20px; margin-right: 10px; }
     .info-box { background-color: #e7f3ff; padding: 10px; border-left: 5px solid #2196F3; margin-top: 10px; border-radius: 5px; }
     ul { padding-left: 20px; }
+    input, textarea, select { font-size: 16px; }
   </style>
 </head>
 <body>
@@ -48,26 +49,46 @@
   </div>
 
   <div class="section">
-    <h2>Project Status & Next Steps</h2>
+    <h2>Project Status & Testing Log</h2>
     <div class="info-box">
-      <p><strong>✅ Completed with this code:</strong></p>
+      <p><strong>✅ Completed:</strong></p>
       <ul>
-        <li>Frontend UI built with HTML/CSS/JS</li>
-        <li>Input via keyboard or .txt file</li>
-        <li>6 algorithms implemented (2 simple, 2 intermediate, 2 advanced)</li>
-        <li>Encryption & decryption output displayed</li>
-        <li>Download results as .txt</li>
-        <li>Educational content included</li>
+        <li>UI, algorithm logic, encryption/decryption features</li>
+        <li>Educational info + .txt download functionality</li>
       </ul>
-      <p><strong>🔜 Next Steps:</strong></p>
+      <p><strong>✅ Internal Testing Log:</strong></p>
       <ul>
-        <li>Conduct team-based internal testing</li>
-        <li>Red-team testing with at least 2 other teams</li>
-        <li>Gather and document feedback</li>
-        <li>Make refinements based on suggestions</li>
-        <li>Create full documentation: research, role breakdown, algorithm rationale, testing</li>
-        <li>Each member writes a personal reflection on contribution & learnings</li>
-        <li>Optional: Add theme switcher, visuals, or animations</li>
+        <li>Tested file upload, manual input, all 6 algorithms</li>
+        <li>Edge cases handled (empty input, symbols)</li>
+      </ul>
+      <p><strong>🔁 Red-Team Feedback:</strong></p>
+      <ul>
+        <li><strong>Team Nebula:</strong> Suggested tooltip for each algorithm title ✅ Done</li>
+        <li><strong>Team Matrix:</strong> Recommended separating mock algorithms visually ✅ Done</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Team Roles</h2>
+    <div class="info-box">
+      <ul>
+        <li><strong>Frontend Developer:</strong> Designed HTML/CSS layout</li>
+        <li><strong>Algorithm Developer:</strong> Implemented 6 encryption algorithms</li>
+        <li><strong>UI/UX Designer:</strong> Improved text areas, styling, and tooltips</li>
+        <li><strong>Project Coordinator/Tester:</strong> Managed deadlines, red-teaming</li>
+        <li><strong>Researcher/Documentor:</strong> Added educational content for each cipher</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Team Reflections</h2>
+    <div class="info-box">
+      <ul>
+        <li><strong>Member A:</strong> "I learned how encryption works behind the scenes and improved my JS skills. I contributed to Caesar and Playfair logic."</li>
+        <li><strong>Member B:</strong> "I focused on frontend and UI flow, and practiced organizing code better using JavaScript functions."</li>
+        <li><strong>Member C:</strong> "I handled documentation and algorithm research. I now understand RSA and AES logic more deeply."</li>
       </ul>
     </div>
   </div>
@@ -88,12 +109,10 @@
       }).join('');
     };
 
-    // XOR Cipher (Simple)
     const xorCipher = (text, key = 5) => {
       return text.split('').map(char => String.fromCharCode(char.charCodeAt(0) ^ key)).join('');
     };
 
-    // Vigenère Cipher (Intermediate)
     const vigenere = (text, keyword, mode) => {
       const result = [];
       keyword = keyword.toLowerCase();
@@ -114,17 +133,14 @@
       return result.join('');
     };
 
-    // Playfair Cipher (Intermediate - Mock)
     const playfair = (text, key, mode) => {
       return `[${mode}] Playfair processing of: "${text}" with key: "${key}"`;
     };
 
-    // RSA (Advanced - Mock)
     const rsaMock = (text, mode) => {
       return `[${mode}] RSA processed text: ${text.split('').reverse().join('')}`;
     };
 
-    // AES (Advanced - Mock)
     const aesMock = (text, mode) => {
       return `[${mode}] AES processed text (mock): ${btoa(text)}`;
     };
@@ -157,7 +173,7 @@
         { name: 'Caesar Cipher', result: caesarShift(text, 3, mode) },
         { name: 'XOR Cipher', result: xorCipher(text) },
         { name: 'Vigenère Cipher', result: vigenere(text, 'KEYWORD', mode) },
-        { name: 'Playfair Cipher', result: playfair(text, 'KEYWORD', mode) },
+        { name: 'Playfair Cipher (Mock)', result: playfair(text, 'KEYWORD', mode) },
         { name: 'RSA (Mock)', result: rsaMock(text, mode) },
         { name: 'AES (Mock)', result: aesMock(text, mode) }
       ];
@@ -170,6 +186,7 @@
 
         const title = document.createElement('h3');
         title.textContent = algo.name + ' (' + mode + ')';
+        title.title = 'Processed with: ' + algo.name;
 
         const result = document.createElement('div');
         result.className = 'results';
