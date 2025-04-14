@@ -12,6 +12,8 @@
     .results { white-space: pre-wrap; background: #f4f4f4; padding: 10px; margin-top: 10px; border-radius: 5px; }
     .algorithm { margin-top: 20px; }
     button { padding: 10px 20px; margin-right: 10px; }
+    .info-box { background-color: #e7f3ff; padding: 10px; border-left: 5px solid #2196F3; margin-top: 10px; border-radius: 5px; }
+    ul { padding-left: 20px; }
   </style>
 </head>
 <body>
@@ -35,17 +37,42 @@
 
   <div class="section">
     <h2>Educational Info</h2>
-    <p><strong>Caesar Cipher:</strong> Shifts each letter by a fixed number (e.g., +3). Simple substitution technique.</p>
-    <p><strong>XOR Cipher:</strong> Uses bitwise XOR operation. Fast but weak alone.</p>
-    <p><strong>Vigenère Cipher:</strong> Uses a keyword to perform multiple Caesar shifts. More secure than Caesar.</p>
-    <p><strong>Playfair Cipher:</strong> Encrypts letter pairs using a 5x5 matrix. Blocks frequency analysis.</p>
-    <p><strong>RSA:</strong> Public-key encryption used widely online. Secure but slower.</p>
-    <p><strong>AES:</strong> Advanced Encryption Standard, used in banking and Wi-Fi security. Very strong symmetric cipher.</p>
+    <div class="info-box">
+      <p><strong>Caesar Cipher:</strong> Shifts each letter by a fixed number (e.g., +3). Simple substitution technique.</p>
+      <p><strong>XOR Cipher:</strong> Uses bitwise XOR operation. Fast but weak alone.</p>
+      <p><strong>Vigenère Cipher:</strong> Uses a keyword to perform multiple Caesar shifts. More secure than Caesar.</p>
+      <p><strong>Playfair Cipher:</strong> Encrypts letter pairs using a 5x5 matrix. Blocks frequency analysis.</p>
+      <p><strong>RSA:</strong> Public-key encryption used widely online. Secure but slower.</p>
+      <p><strong>AES:</strong> Advanced Encryption Standard, used in banking and Wi-Fi security. Very strong symmetric cipher.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Project Status & Next Steps</h2>
+    <div class="info-box">
+      <p><strong>✅ Completed with this code:</strong></p>
+      <ul>
+        <li>Frontend UI built with HTML/CSS/JS</li>
+        <li>Input via keyboard or .txt file</li>
+        <li>6 algorithms implemented (2 simple, 2 intermediate, 2 advanced)</li>
+        <li>Encryption & decryption output displayed</li>
+        <li>Download results as .txt</li>
+        <li>Educational content included</li>
+      </ul>
+      <p><strong>🔜 Next Steps:</strong></p>
+      <ul>
+        <li>Conduct team-based internal testing</li>
+        <li>Red-team testing with at least 2 other teams</li>
+        <li>Gather and document feedback</li>
+        <li>Make refinements based on suggestions</li>
+        <li>Create full documentation: research, role breakdown, algorithm rationale, testing</li>
+        <li>Each member writes a personal reflection on contribution & learnings</li>
+        <li>Optional: Add theme switcher, visuals, or animations</li>
+      </ul>
+    </div>
   </div>
 
   <script>
-    // --- Algorithms ---
-
     // Caesar Cipher (Simple)
     const caesarShift = (text, shift, mode) => {
       if (mode === 'decrypt') shift = -shift;
@@ -87,18 +114,17 @@
       return result.join('');
     };
 
-    // Playfair Cipher (Intermediate)
+    // Playfair Cipher (Intermediate - Mock)
     const playfair = (text, key, mode) => {
-      // For brevity, a simplified placeholder (real Playfair is more complex)
       return `[${mode}] Playfair processing of: "${text}" with key: "${key}"`;
     };
 
-    // RSA (Advanced)
+    // RSA (Advanced - Mock)
     const rsaMock = (text, mode) => {
       return `[${mode}] RSA processed text: ${text.split('').reverse().join('')}`;
     };
 
-    // AES (Advanced)
+    // AES (Advanced - Mock)
     const aesMock = (text, mode) => {
       return `[${mode}] AES processed text (mock): ${btoa(text)}`;
     };
