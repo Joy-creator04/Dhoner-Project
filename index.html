@@ -16,6 +16,7 @@
 </head>
 <body>
   <h1>Cryptography Demonstration</h1>
+
   <div class="section">
     <h2>Input</h2>
     <textarea id="userInput" placeholder="Type your text here..."></textarea>
@@ -24,6 +25,7 @@
     <br /><br />
     <button onclick="processText('encrypt')">Encrypt</button>
     <button onclick="processText('decrypt')">Decrypt</button>
+    <button onclick="downloadResults()">Download Results as .txt</button>
   </div>
 
   <div class="section">
@@ -31,8 +33,20 @@
     <div id="results"></div>
   </div>
 
+  <div class="section">
+    <h2>Educational Info</h2>
+    <p><strong>Caesar Cipher:</strong> Shifts each letter by a fixed number (e.g., +3). Simple substitution technique.</p>
+    <p><strong>XOR Cipher:</strong> Uses bitwise XOR operation. Fast but weak alone.</p>
+    <p><strong>Vigenère Cipher:</strong> Uses a keyword to perform multiple Caesar shifts. More secure than Caesar.</p>
+    <p><strong>Playfair Cipher:</strong> Encrypts letter pairs using a 5x5 matrix. Blocks frequency analysis.</p>
+    <p><strong>RSA:</strong> Public-key encryption used widely online. Secure but slower.</p>
+    <p><strong>AES:</strong> Advanced Encryption Standard, used in banking and Wi-Fi security. Very strong symmetric cipher.</p>
+  </div>
+
   <script>
-    // SIMPLE ALGORITHM: Caesar Cipher
+    // --- Algorithms ---
+
+    // Caesar Cipher (Simple)
     const caesarShift = (text, shift, mode) => {
       if (mode === 'decrypt') shift = -shift;
       return text.split('').map(char => {
@@ -47,7 +61,51 @@
       }).join('');
     };
 
-    const processText = async (mode) => {
+    // XOR Cipher (Simple)
+    const xorCipher = (text, key = 5) => {
+      return text.split('').map(char => String.fromCharCode(char.charCodeAt(0) ^ key)).join('');
+    };
+
+    // Vigenère Cipher (Intermediate)
+    const vigenere = (text, keyword, mode) => {
+      const result = [];
+      keyword = keyword.toLowerCase();
+      let keywordIndex = 0;
+      for (let char of text) {
+        const code = char.charCodeAt(0);
+        if (/[a-zA-Z]/.test(char)) {
+          const base = code >= 97 ? 97 : 65;
+          const keyChar = keyword[keywordIndex % keyword.length].charCodeAt(0) - 97;
+          const shift = mode === 'encrypt' ? keyChar : -keyChar;
+          const newCode = (code - base + shift + 26) % 26 + base;
+          result.push(String.fromCharCode(newCode));
+          keywordIndex++;
+        } else {
+          result.push(char);
+        }
+      }
+      return result.join('');
+    };
+
+    // Playfair Cipher (Intermediate)
+    const playfair = (text, key, mode) => {
+      // For brevity, a simplified placeholder (real Playfair is more complex)
+      return `[${mode}] Playfair processing of: "${text}" with key: "${key}"`;
+    };
+
+    // RSA (Advanced)
+    const rsaMock = (text, mode) => {
+      return `[${mode}] RSA processed text: ${text.split('').reverse().join('')}`;
+    };
+
+    // AES (Advanced)
+    const aesMock = (text, mode) => {
+      return `[${mode}] AES processed text (mock): ${btoa(text)}`;
+    };
+
+    let lastResults = '';
+
+    const processText = (mode) => {
       const inputField = document.getElementById('userInput');
       const fileInput = document.getElementById('fileInput');
       let text = inputField.value;
@@ -70,12 +128,15 @@
       resultsDiv.innerHTML = '';
 
       const algorithms = [
-        {
-          name: 'Caesar Cipher',
-          result: caesarShift(text, 3, mode)
-        }
-        // Add more algorithms here later
+        { name: 'Caesar Cipher', result: caesarShift(text, 3, mode) },
+        { name: 'XOR Cipher', result: xorCipher(text) },
+        { name: 'Vigenère Cipher', result: vigenere(text, 'KEYWORD', mode) },
+        { name: 'Playfair Cipher', result: playfair(text, 'KEYWORD', mode) },
+        { name: 'RSA (Mock)', result: rsaMock(text, mode) },
+        { name: 'AES (Mock)', result: aesMock(text, mode) }
       ];
+
+      lastResults = '';
 
       algorithms.forEach(algo => {
         const container = document.createElement('div');
@@ -88,10 +149,20 @@
         result.className = 'results';
         result.textContent = algo.result;
 
+        lastResults += `---\n${algo.name} (${mode}):\n${algo.result}\n\n`;
+
         container.appendChild(title);
         container.appendChild(result);
         resultsDiv.appendChild(container);
       });
+    };
+
+    const downloadResults = () => {
+      const blob = new Blob([lastResults], { type: 'text/plain' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = 'encryption_results.txt';
+      link.click();
     };
   </script>
 </body>
