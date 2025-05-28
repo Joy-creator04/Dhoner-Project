@@ -2,33 +2,218 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Cryptography Demo Site</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Cryptography Demonstration</title>
   <style>
-    body { font-family: Arial, sans-serif; padding: 20px; }
-    h1, h2 { text-align: center; }
-    .section { margin-bottom: 30px; }
-    textarea { width: 100%; height: 100px; }
-    .results { white-space: pre-wrap; background: #f4f4f4; padding: 10px; margin-top: 10px; border-radius: 5px; }
-    .algorithm { margin-top: 20px; }
-    button { padding: 10px 20px; margin-right: 10px; }
-    .info-box { background-color: #e7f3ff; padding: 10px; border-left: 5px solid #2196F3; margin-top: 10px; border-radius: 5px; }
-    ul { padding-left: 20px; }
-    input, textarea, select { font-size: 16px; }
+    /* Reset & base */
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      padding: 30px 40px;
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      color: #e0e6f0;
+      transition: background 0.4s, color 0.4s;
+      min-height: 100vh;
+    }
+    body.dark {
+      background: linear-gradient(135deg, #121212, #1e1e1e, #272727);
+      color: #cfd8dc;
+    }
+
+    h1, h2 {
+      text-align: center;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      margin-bottom: 15px;
+      text-shadow: 0 0 10px rgba(0, 150, 255, 0.6);
+    }
+
+    .section {
+      margin-bottom: 40px;
+      background: rgba(255,255,255,0.05);
+      padding: 25px 30px;
+      border-radius: 14px;
+      box-shadow: 0 8px 24px rgba(0, 150, 255, 0.15);
+      backdrop-filter: blur(10px);
+    }
+
+    textarea {
+      width: 100%;
+      height: 110px;
+      border-radius: 10px;
+      border: none;
+      padding: 15px;
+      font-size: 1.1rem;
+      font-family: 'Consolas', monospace;
+      resize: vertical;
+      background-color: rgba(255,255,255,0.15);
+      color: #e0e6f0;
+      box-shadow: inset 0 0 8px rgba(0, 150, 255, 0.3);
+      transition: background-color 0.3s;
+    }
+    textarea:focus {
+      outline: none;
+      background-color: rgba(0, 150, 255, 0.2);
+      box-shadow: inset 0 0 12px #0096ff;
+      color: #fff;
+    }
+
+    input[type="file"] {
+      margin-top: 15px;
+      color: #ddd;
+      font-size: 1rem;
+      font-weight: 500;
+    }
+
+    label {
+      font-size: 1rem;
+      user-select: none;
+      cursor: pointer;
+      margin-right: 25px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: #a0b9d6;
+      transition: color 0.3s;
+    }
+    label:hover {
+      color: #00aaff;
+    }
+
+    input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+    }
+
+    button {
+      background: linear-gradient(90deg, #00bfff, #1e90ff);
+      border: none;
+      border-radius: 12px;
+      color: white;
+      font-weight: 600;
+      font-size: 1.05rem;
+      padding: 12px 26px;
+      margin: 10px 10px 0 0;
+      cursor: pointer;
+      box-shadow: 0 6px 15px rgba(0, 191, 255, 0.5);
+      transition: background 0.25s ease, box-shadow 0.25s ease;
+      user-select: none;
+    }
+    button:hover {
+      background: linear-gradient(90deg, #1e90ff, #00bfff);
+      box-shadow: 0 8px 24px rgba(0, 191, 255, 0.75);
+    }
+    button:active {
+      box-shadow: 0 3px 8px rgba(0, 191, 255, 0.8);
+      transform: scale(0.98);
+    }
+
+    .copy-btn {
+      float: right;
+      font-size: 0.85rem;
+      padding: 6px 12px;
+      background: #0096ff;
+      border-radius: 8px;
+      border: none;
+      color: #e0e6f0;
+      font-weight: 600;
+      box-shadow: 0 4px 12px rgba(0, 150, 255, 0.7);
+      transition: background 0.3s;
+    }
+    .copy-btn:hover {
+      background: #00c0ff;
+    }
+    body.dark .copy-btn {
+      background: #005f99;
+      color: #d0e6ff;
+    }
+
+    .results {
+      white-space: pre-wrap;
+      background: rgba(255,255,255,0.1);
+      padding: 15px 20px;
+      margin-top: 12px;
+      border-radius: 12px;
+      font-family: 'Consolas', monospace;
+      font-size: 1rem;
+      box-shadow: inset 0 0 10px rgba(0, 150, 255, 0.3);
+      color: #cce7ff;
+      user-select: text;
+      min-height: 40px;
+    }
+    body.dark .results {
+      background: rgba(0,0,0,0.3);
+      box-shadow: inset 0 0 12px #0096ff;
+      color: #a3cfff;
+    }
+
+    .algorithm {
+      margin-top: 30px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      padding-top: 20px;
+      position: relative;
+    }
+
+    /* Dark toggle button */
+    .toggle-dark {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: #00aaff;
+      color: white;
+      padding: 10px 16px;
+      border-radius: 12px;
+      border: none;
+      font-size: 1.3rem;
+      cursor: pointer;
+      box-shadow: 0 6px 15px rgba(0, 170, 255, 0.7);
+      transition: background 0.3s ease;
+      user-select: none;
+      z-index: 999;
+    }
+    .toggle-dark:hover {
+      background: #0088cc;
+    }
+    .toggle-dark:active {
+      background: #006699;
+      transform: scale(0.95);
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      body {
+        padding: 20px 15px;
+      }
+      button, label {
+        font-size: 0.9rem;
+        padding: 10px 14px;
+      }
+      textarea {
+        font-size: 1rem;
+      }
+    }
   </style>
 </head>
 <body>
+  <button class="toggle-dark" onclick="toggleDark()" title="Toggle Dark Mode">🌙</button>
   <h1>Cryptography Demonstration</h1>
 
   <div class="section">
     <h2>Input</h2>
-    <textarea id="userInput" placeholder="Type your text here..."></textarea>
-    <br />
-    <input type="file" id="fileInput" accept=".txt" />
-    <br /><br />
-    <button onclick="processText('encrypt')">Encrypt</button>
-    <button onclick="processText('decrypt')">Decrypt</button>
-    <button onclick="downloadResults()">Download Results as .txt</button>
+    <textarea id="userInput" placeholder="Example: hello world"></textarea><br />
+    <input type="file" id="fileInput" accept=".txt" /><br /><br />
+    <label title="Encrypt automatically while typing">
+      <input type="checkbox" id="liveToggle" checked> Live Preview
+    </label>
+    <label title="Convert input to uppercase">
+      <input type="checkbox" id="autoCapToggle"> Auto Capitalize
+    </label><br /><br />
+    <button onclick="processText('encrypt')" title="Encrypt using all algorithms">Encrypt</button>
+    <button onclick="processText('decrypt')" title="Decrypt using all algorithms">Decrypt</button>
+    <button onclick="downloadResults()" title="Download all results as .txt">Download .txt</button>
   </div>
 
   <div class="section">
@@ -36,64 +221,7 @@
     <div id="results"></div>
   </div>
 
-  <div class="section">
-    <h2>Educational Info</h2>
-    <div class="info-box">
-      <p><strong>Caesar Cipher:</strong> Shifts each letter by a fixed number (e.g., +3). Simple substitution technique.</p>
-      <p><strong>XOR Cipher:</strong> Uses bitwise XOR operation. Fast but weak alone.</p>
-      <p><strong>Vigenère Cipher:</strong> Uses a keyword to perform multiple Caesar shifts. More secure than Caesar.</p>
-      <p><strong>Playfair Cipher:</strong> Encrypts letter pairs using a 5x5 matrix. Blocks frequency analysis.</p>
-      <p><strong>RSA:</strong> Public-key encryption used widely online. Secure but slower.</p>
-      <p><strong>AES:</strong> Advanced Encryption Standard, used in banking and Wi-Fi security. Very strong symmetric cipher.</p>
-    </div>
-  </div>
-
-  <div class="section">
-    <h2>Project Status & Testing Log</h2>
-    <div class="info-box">
-      <p><strong>✅ Completed:</strong></p>
-      <ul>
-        <li>UI, algorithm logic, encryption/decryption features</li>
-        <li>Educational info + .txt download functionality</li>
-      </ul>
-      <p><strong>✅ Internal Testing Log:</strong></p>
-      <ul>
-        <li>Tested file upload, manual input, all 6 algorithms</li>
-        <li>Edge cases handled (empty input, symbols)</li>
-      </ul>
-      <p><strong>🔁 Red-Team Feedback:</strong></p>
-      <ul>
-        <li><strong>Team Nebula:</strong> Suggested tooltip for each algorithm title ✅ Done</li>
-        <li><strong>Team Matrix:</strong> Recommended separating mock algorithms visually ✅ Done</li>
-      </ul>
-    </div>
-  </div>
-
-  <div class="section">
-    <h2>Team Roles</h2>
-    <div class="info-box">
-      <ul>
-        <li><strong>Frontend Developer:</strong> Designed HTML/CSS layout</li>
-        <li><strong>Algorithm Developer:</strong> Implemented 6 encryption algorithms</li>
-        <li><strong>UI/UX Designer:</strong> Improved text areas, styling, and tooltips</li>
-        <li><strong>Project Coordinator/Tester:</strong> Managed deadlines, red-teaming</li>
-        <li><strong>Researcher/Documentor:</strong> Added educational content for each cipher</li>
-      </ul>
-    </div>
-  </div>
-
-  <div class="section">
-    <h2>Team Reflections</h2>
-    <div class="info-box">
-      <ul>
-        <li><strong>Member JOY:</strong> "I learned how encryption works behind the scenes and improved my JS skills. I contributed to Caesar and Playfair logic."</li>
-        <li><strong>Member Mahedi:</strong> "I focused on frontend and UI flow, and practiced organizing code better using JavaScript functions."</li>
-      </ul>
-    </div>
-  </div>
-
   <script>
-    // Caesar Cipher (Simple)
     const caesarShift = (text, shift, mode) => {
       if (mode === 'decrypt') shift = -shift;
       return text.split('').map(char => {
@@ -132,17 +260,9 @@
       return result.join('');
     };
 
-    const playfair = (text, key, mode) => {
-      return `[${mode}] Playfair processing of: "${text}" with key: "${key}"`;
-    };
-
-    const rsaMock = (text, mode) => {
-      return `[${mode}] RSA processed text: ${text.split('').reverse().join('')}`;
-    };
-
-    const aesMock = (text, mode) => {
-      return `[${mode}] AES processed text (mock): ${btoa(text)}`;
-    };
+    const playfair = (text, key, mode) => `${mode.toUpperCase()} - Playfair Cipher (Mock): ${text}`;
+    const rsaMock = (text, mode) => `${mode.toUpperCase()} - RSA (Mock): ${text.split('').reverse().join('')}`;
+    const aesMock = (text, mode) => `${mode.toUpperCase()} - AES (Mock): ${btoa(text)}`;
 
     let lastResults = '';
 
@@ -151,11 +271,18 @@
       const fileInput = document.getElementById('fileInput');
       let text = inputField.value;
 
+      if (document.getElementById('autoCapToggle').checked) {
+        text = text.toUpperCase();
+      }
+
       if (!text && fileInput.files.length > 0) {
         const file = fileInput.files[0];
         const reader = new FileReader();
         reader.onload = () => {
           text = reader.result;
+          if (document.getElementById('autoCapToggle').checked) {
+            text = text.toUpperCase();
+          }
           showResults(text, mode);
         };
         reader.readAsText(file);
@@ -167,6 +294,7 @@
     const showResults = (text, mode) => {
       const resultsDiv = document.getElementById('results');
       resultsDiv.innerHTML = '';
+      lastResults = '';
 
       const algorithms = [
         { name: 'Caesar Cipher', result: caesarShift(text, 3, mode) },
@@ -177,15 +305,21 @@
         { name: 'AES (Mock)', result: aesMock(text, mode) }
       ];
 
-      lastResults = '';
-
       algorithms.forEach(algo => {
         const container = document.createElement('div');
         container.className = 'algorithm';
 
         const title = document.createElement('h3');
-        title.textContent = algo.name + ' (' + mode + ')';
-        title.title = 'Processed with: ' + algo.name;
+        title.textContent = `${algo.name} (${mode})`;
+
+        const copyBtn = document.createElement('button');
+        copyBtn.className = 'copy-btn';
+        copyBtn.textContent = 'Copy';
+        copyBtn.onclick = () => {
+          navigator.clipboard.writeText(algo.result);
+          copyBtn.textContent = 'Copied!';
+          setTimeout(() => copyBtn.textContent = 'Copy', 1500);
+        };
 
         const result = document.createElement('div');
         result.className = 'results';
@@ -194,6 +328,7 @@
         lastResults += `---\n${algo.name} (${mode}):\n${algo.result}\n\n`;
 
         container.appendChild(title);
+        container.appendChild(copyBtn);
         container.appendChild(result);
         resultsDiv.appendChild(container);
       });
@@ -206,6 +341,16 @@
       link.download = 'encryption_results.txt';
       link.click();
     };
+
+    const toggleDark = () => {
+      document.body.classList.toggle('dark');
+    };
+
+    document.getElementById('userInput').addEventListener('input', () => {
+      if (document.getElementById('liveToggle').checked) {
+        processText('encrypt');
+      }
+    });
   </script>
 </body>
 </html>
