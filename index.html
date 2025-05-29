@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Cryptography Demonstration</title>
+  <title>Educational Cryptography Demonstration</title>
   <style>
     /* Reset & base */
     * {
@@ -182,6 +182,82 @@
       transform: scale(0.95);
     }
 
+    /* Educational Enhancement Styles */
+    .info-panel {
+      background: rgba(0, 255, 127, 0.1);
+      border-left: 4px solid #00ff7f;
+      padding: 20px;
+      margin-bottom: 20px;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+
+    .theory-section {
+      background: rgba(255, 165, 0, 0.1);
+      border: 1px solid rgba(255, 165, 0, 0.3);
+      padding: 20px;
+      margin: 20px 0;
+      border-radius: 10px;
+    }
+
+    .step-by-step {
+      background: rgba(138, 43, 226, 0.1);
+      border: 1px solid rgba(138, 43, 226, 0.3);
+      padding: 15px;
+      margin: 15px 0;
+      border-radius: 8px;
+    }
+
+    .example-box {
+      background: rgba(255, 20, 147, 0.1);
+      border: 1px solid rgba(255, 20, 147, 0.3);
+      padding: 15px;
+      margin: 10px 0;
+      border-radius: 8px;
+      font-family: 'Consolas', monospace;
+    }
+
+    .security-note {
+      background: rgba(255, 69, 0, 0.1);
+      border-left: 4px solid #ff4500;
+      padding: 15px;
+      margin: 15px 0;
+      border-radius: 6px;
+      font-weight: 500;
+    }
+
+    .interactive-btn {
+      background: linear-gradient(90deg, #ff6b35, #f7931e);
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      margin: 5px;
+      transition: all 0.3s ease;
+    }
+    .interactive-btn:hover {
+      background: linear-gradient(90deg, #f7931e, #ff6b35);
+      transform: translateY(-2px);
+    }
+
+    .quiz-section {
+      background: rgba(0, 191, 255, 0.1);
+      border: 2px solid rgba(0, 191, 255, 0.3);
+      padding: 20px;
+      margin: 20px 0;
+      border-radius: 12px;
+    }
+
+    .explanation {
+      font-size: 0.9rem;
+      color: #b0c4de;
+      margin-top: 10px;
+      line-height: 1.5;
+    }
+
     /* Responsive */
     @media (max-width: 600px) {
       body {
@@ -194,6 +270,10 @@
       textarea {
         font-size: 1rem;
       }
+      .info-panel, .theory-section {
+        padding: 15px;
+        font-size: 0.9rem;
+      }
     }
   </style>
 </head>
@@ -203,17 +283,28 @@
 
   <div class="section">
     <h2>Input</h2>
-    <textarea id="userInput" placeholder="Example: hello world"></textarea><br />
+    <textarea id="userInput" placeholder="Try typing: 'ATTACK AT DAWN' or 'Hello World!'"></textarea><br />
     <input type="file" id="fileInput" accept=".txt" /><br /><br />
     <label title="Encrypt automatically while typing">
       <input type="checkbox" id="liveToggle" checked> Live Preview
     </label>
     <label title="Convert input to uppercase">
       <input type="checkbox" id="autoCapToggle"> Auto Capitalize
+    </label>
+    <label title="Show educational explanations">
+      <input type="checkbox" id="educationToggle" checked> Show Learning Details
     </label><br /><br />
-    <button onclick="processText('encrypt')" title="Encrypt using all algorithms">Encrypt</button>
-    <button onclick="processText('decrypt')" title="Decrypt using all algorithms">Decrypt</button>
-    <button onclick="downloadResults()" title="Download all results as .txt">Download .txt</button>
+    <button onclick="processText('encrypt')" title="Encrypt using all algorithms">🔒 Encrypt</button>
+    <button onclick="processText('decrypt')" title="Decrypt using all algorithms">🔓 Decrypt</button>
+    <button onclick="downloadResults()" title="Download all results as .txt">📥 Download .txt</button>
+    <button class="interactive-btn" onclick="loadExample()">📝 Load Example</button>
+    <button class="interactive-btn" onclick="showQuiz()">🧩 Take Quiz</button>
+  </div>
+
+  <!-- Quiz Section -->
+  <div id="quizSection" class="section quiz-section" style="display: none;">
+    <h2>🧩 Cryptography Quiz</h2>
+    <div id="quizContent"></div>
   </div>
 
   <div class="section">
@@ -266,6 +357,46 @@
 
     let lastResults = '';
 
+    // Educational content for each algorithm
+    const educationalContent = {
+      'Caesar Cipher': {
+        theory: 'Named after Julius Caesar, this cipher shifts each letter by a fixed number of positions in the alphabet. It\'s a substitution cipher where A becomes D (shift of 3), B becomes E, etc.',
+        example: 'HELLO → KHOOR (shift of 3)\nH(+3)→K, E(+3)→H, L(+3)→O, L(+3)→O, O(+3)→R',
+        security: '⚠️ VERY WEAK: Only 25 possible keys. Can be broken by trying all possibilities (brute force) or frequency analysis.',
+        steps: '1. Choose shift value (key)\n2. For each letter, move forward/backward in alphabet\n3. Wrap around: Z+1 = A'
+      },
+      'XOR Cipher': {
+        theory: 'Uses the XOR (exclusive OR) operation. Each character is XORed with a key value. XOR is reversible: if A ⊕ B = C, then C ⊕ B = A.',
+        example: 'H (72) XOR 5 = 77 (M)\n01001000 XOR 00000101 = 01001101',
+        security: '⚠️ WEAK with single key: Vulnerable to frequency analysis. Strong only with random one-time pad.',
+        steps: '1. Convert character to ASCII\n2. XOR with key value\n3. Convert back to character'
+      },
+      'Vigenère Cipher': {
+        theory: 'Uses a keyword where each letter represents a different Caesar shift. More secure than Caesar as it uses multiple shifts, making frequency analysis harder.',
+        example: 'Text: HELLO, Key: CAT\nH+C(2)=J, E+A(0)=E, L+T(19)=E, L+C(2)=N, O+A(0)=O → JEENO',
+        security: '🔶 MODERATE: Secure against frequency analysis but vulnerable to Kasiski examination and index of coincidence attacks.',
+        steps: '1. Repeat keyword to match text length\n2. Apply Caesar cipher with each keyword letter\n3. Cycle through keyword letters'
+      },
+      'Playfair Cipher': {
+        theory: 'Uses a 5×5 grid of letters (I/J combined) based on a keyword. Encrypts pairs of letters (digraphs) instead of single letters.',
+        example: 'Grid with key "MONARCHY":\nM O N A R\nC H Y B D\nE F G I K\nL P Q S T\nU V W X Z',
+        security: '🔶 MODERATE: More secure than simple substitution. Used in WWI & WWII. Vulnerable to frequency analysis of digraphs.',
+        steps: '1. Create 5×5 key grid\n2. Split text into pairs\n3. Apply position rules for encryption'
+      },
+      'RSA': {
+        theory: 'Asymmetric encryption using two keys (public/private). Based on the mathematical difficulty of factoring large prime numbers. Enables secure communication without sharing secret keys.',
+        example: 'Public Key: (n=33, e=3)\nPrivate Key: (n=33, d=7)\nMessage 2: 2³ mod 33 = 8\nDecrypt 8: 8⁷ mod 33 = 2',
+        security: '🟢 VERY STRONG: Security depends on key size. 2048-bit keys are currently secure. Quantum computers pose future threat.',
+        steps: '1. Generate two large primes p, q\n2. Calculate n = p×q\n3. Choose e, calculate d\n4. Encrypt: c = m^e mod n'
+      },
+      'AES': {
+        theory: 'Advanced Encryption Standard - symmetric cipher using substitution and permutation. Operates on blocks of 128 bits with keys of 128, 192, or 256 bits.',
+        example: 'Uses SubBytes, ShiftRows, MixColumns, and AddRoundKey operations through multiple rounds (10/12/14 rounds depending on key size).',
+        security: '🟢 VERY STRONG: Current U.S. government standard. No practical attacks known against full AES. Quantum-resistant with larger keys.',
+        steps: '1. Key expansion\n2. Initial round key addition\n3. Multiple rounds of 4 operations\n4. Final round (no MixColumns)'
+      }
+    };
+
     const processText = (mode) => {
       const inputField = document.getElementById('userInput');
       const fileInput = document.getElementById('fileInput');
@@ -293,16 +424,17 @@
 
     const showResults = (text, mode) => {
       const resultsDiv = document.getElementById('results');
+      const showEducation = document.getElementById('educationToggle').checked;
       resultsDiv.innerHTML = '';
       lastResults = '';
 
       const algorithms = [
-        { name: 'Caesar Cipher', result: caesarShift(text, 3, mode) },
-        { name: 'XOR Cipher', result: xorCipher(text) },
-        { name: 'Vigenère Cipher', result: vigenere(text, 'KEYWORD', mode) },
-        { name: 'Playfair Cipher (Mock)', result: playfair(text, 'KEYWORD', mode) },
-        { name: 'RSA (Mock)', result: rsaMock(text, mode) },
-        { name: 'AES (Mock)', result: aesMock(text, mode) }
+        { name: 'Caesar Cipher', result: caesarShift(text, 3, mode), key: 'Caesar Cipher' },
+        { name: 'XOR Cipher', result: xorCipher(text), key: 'XOR Cipher' },
+        { name: 'Vigenère Cipher', result: vigenere(text, 'KEYWORD', mode), key: 'Vigenère Cipher' },
+        { name: 'Playfair Cipher (Mock)', result: playfair(text, 'KEYWORD', mode), key: 'Playfair Cipher' },
+        { name: 'RSA (Mock)', result: rsaMock(text, mode), key: 'RSA' },
+        { name: 'AES (Mock)', result: aesMock(text, mode), key: 'AES' }
       ];
 
       algorithms.forEach(algo => {
@@ -325,11 +457,37 @@
         result.className = 'results';
         result.textContent = algo.result;
 
-        lastResults += `---\n${algo.name} (${mode}):\n${algo.result}\n\n`;
-
         container.appendChild(title);
         container.appendChild(copyBtn);
         container.appendChild(result);
+
+        // Add educational content
+        if (showEducation && educationalContent[algo.key]) {
+          const edu = educationalContent[algo.key];
+          
+          const theoryDiv = document.createElement('div');
+          theoryDiv.className = 'theory-section';
+          theoryDiv.innerHTML = `<h4>📖 How it works:</h4><p>${edu.theory}</p>`;
+          
+          const stepsDiv = document.createElement('div');
+          stepsDiv.className = 'step-by-step';
+          stepsDiv.innerHTML = `<h4>🔧 Steps:</h4><pre>${edu.steps}</pre>`;
+          
+          const exampleDiv = document.createElement('div');
+          exampleDiv.className = 'example-box';
+          exampleDiv.innerHTML = `<h4>💡 Example:</h4><pre>${edu.example}</pre>`;
+          
+          const securityDiv = document.createElement('div');
+          securityDiv.className = 'security-note';
+          securityDiv.innerHTML = `<h4>🔐 Security Level:</h4><p>${edu.security}</p>`;
+          
+          container.appendChild(theoryDiv);
+          container.appendChild(stepsDiv);
+          container.appendChild(exampleDiv);
+          container.appendChild(securityDiv);
+        }
+
+        lastResults += `---\n${algo.name} (${mode}):\n${algo.result}\n\n`;
         resultsDiv.appendChild(container);
       });
     };
@@ -346,11 +504,109 @@
       document.body.classList.toggle('dark');
     };
 
+    const loadExample = () => {
+      const examples = [
+        'ATTACK AT DAWN',
+        'MEET ME AT MIDNIGHT',
+        'THE QUICK BROWN FOX',
+        'CRYPTOGRAPHY IS FUN',
+        'SECURITY THROUGH OBSCURITY'
+      ];
+      const randomExample = examples[Math.floor(Math.random() * examples.length)];
+      document.getElementById('userInput').value = randomExample;
+      if (document.getElementById('liveToggle').checked) {
+        processText('encrypt');
+      }
+    };
+
+    const quizQuestions = [
+      {
+        question: "Which cipher was used by Julius Caesar?",
+        options: ["Caesar Cipher", "Vigenère Cipher", "XOR Cipher", "AES"],
+        correct: 0,
+        explanation: "The Caesar Cipher is named after Julius Caesar, who used it to communicate with his generals."
+      },
+      {
+        question: "What makes the Vigenère cipher more secure than Caesar?",
+        options: ["It uses bigger shifts", "It uses multiple different shifts", "It's harder to remember", "It uses numbers"],
+        correct: 1,
+        explanation: "Vigenère uses different shifts for each letter based on a keyword, making frequency analysis much harder."
+      },
+      {
+        question: "What does XOR stand for?",
+        options: ["X Over R", "eXclusive OR", "eXtra Operations Required", "X Operations Repeated"],
+        correct: 1,
+        explanation: "XOR means 'eXclusive OR' - it's true when inputs are different, false when they're the same."
+      },
+      {
+        question: "Which is currently the strongest encryption?",
+        options: ["Caesar", "XOR", "Vigenère", "AES"],
+        correct: 3,
+        explanation: "AES (Advanced Encryption Standard) is currently used by governments and is considered very secure."
+      }
+    ];
+
+    let currentQuiz = 0;
+
+    const showQuiz = () => {
+      const quizSection = document.getElementById('quizSection');
+      const quizContent = document.getElementById('quizContent');
+      quizSection.style.display = 'block';
+      
+      if (currentQuiz >= quizQuestions.length) {
+        quizContent.innerHTML = `
+          <h3>🎉 Quiz Complete!</h3>
+          <p>Great job learning about cryptography! You've completed all questions.</p>
+          <button class="interactive-btn" onclick="resetQuiz()">🔄 Start Over</button>
+        `;
+        return;
+      }
+
+      const q = quizQuestions[currentQuiz];
+      quizContent.innerHTML = `
+        <h3>Question ${currentQuiz + 1} of ${quizQuestions.length}</h3>
+        <p><strong>${q.question}</strong></p>
+        ${q.options.map((option, i) => 
+          `<button class="interactive-btn" onclick="checkAnswer(${i})">${option}</button>`
+        ).join('')}
+        <div id="quizFeedback"></div>
+      `;
+    };
+
+    const checkAnswer = (selected) => {
+      const q = quizQuestions[currentQuiz];
+      const feedback = document.getElementById('quizFeedback');
+      
+      if (selected === q.correct) {
+        feedback.innerHTML = `<div class="info-panel">✅ Correct! ${q.explanation}</div>`;
+      } else {
+        feedback.innerHTML = `<div class="security-note">❌ Not quite. ${q.explanation}</div>`;
+      }
+      
+      setTimeout(() => {
+        currentQuiz++;
+        showQuiz();
+      }, 3000);
+    };
+
+    const resetQuiz = () => {
+      currentQuiz = 0;
+      showQuiz();
+    };
+
     document.getElementById('userInput').addEventListener('input', () => {
       if (document.getElementById('liveToggle').checked) {
         processText('encrypt');
       }
     });
+
+    // Load initial example
+    setTimeout(() => {
+      document.getElementById('userInput').value = 'HELLO WORLD';
+      if (document.getElementById('liveToggle').checked) {
+        processText('encrypt');
+      }
+    }, 500);
   </script>
 </body>
 </html>
